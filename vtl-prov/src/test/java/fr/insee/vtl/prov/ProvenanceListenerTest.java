@@ -18,4 +18,17 @@ public class ProvenanceListenerTest {
         Program program = ProvenanceListener.run(script, "trevas-simple-test", "Simple test from Trevas tests");
         assertThat(program.getProgramSteps()).hasSize(3);
     }
+
+    @Test
+    public void testWithEmptyLineAtEnd() {
+        String script = "\n\n" +
+                "ds1 := 'data.ds1'[calc identifier id1 := id1, var1 := cast(var1, integer), var2 := cast(var2, integer)];\n" +
+                "ds2_out := 'other.ds2'[calc identifier id1 := id1, var1 := cast(var1, integer), var2 := cast(var2, integer)];\n" +
+                "ds_sum := ds1 + ds2_out;\n" +
+                "ds_mul <- ds_sum * 3;\n" +
+                "'data.ds_res' <- ds_mul[filter mod(var1, 2) = 0][calc var_sum := var1 + var2];\n\n";
+
+        Program program = ProvenanceListener.run(script, "trevas-simple-test", "Simple test from Trevas tests");
+        assertThat(program.getProgramSteps()).hasSize(5);
+    }
 }

@@ -188,7 +188,7 @@ public class ProvenanceListener extends VtlBaseListener {
     }
 
     public static Program run(String expr, String id, String programName) {
-        CodePointCharStream stream = CharStreams.fromString(expr);
+        CodePointCharStream stream = CharStreams.fromString(expr.trim());
         VtlLexer lexer = new VtlLexer(stream);
         VtlParser parser = new VtlParser(new CommonTokenStream(lexer));
 
@@ -210,6 +210,9 @@ public class ProvenanceListener extends VtlBaseListener {
                     int i = index.getAndIncrement();
                     // 1 - Handle input dataset
                     ProgramStep step = program.getProgramStepByIndex(i);
+                    if(null==step) {
+                        return;
+                    }
                     Set<DataframeInstance> consumedDataframe = step.getConsumedDataframe();
                     consumedDataframe.forEach(d -> {
                         if (!dsHandled.contains(d.getLabel())) {
